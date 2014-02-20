@@ -27,7 +27,7 @@ public class GameController {
 
     private GameController()
     {
-        gameState = new GameState();
+        gameState = GameState.SELECTING_START_NODE;
         roots = new ArrayList();
         nodes = new ArrayList();
         players = new ArrayList();
@@ -51,59 +51,85 @@ public class GameController {
     }
 
     public void actionUp(MotionEvent event){
-        System.out.println("-=-=-=-=-=-=-=-=-=-=-+_+_+-=_+_+_=_=_=");
-        if(gameState.drawingLine){
-            currentX = event.getX();
-            currentY = event.getY();
-            endNode = getNodeAt(currentX,currentY);
-            if(endNode != null){
-                currentRoot.currentPath.lineTo(event.getX(),event.getY());
-                Path newPath = new Path();
-                currentRoot.currentPath = newPath;
-                //startNode.unClick();
-            }
-            else{
-                currentRoot.clear();
-                if(startNode!=null) startNode.unClick();
-            }
+        switch(gameState){
+            case SELECTING_START_NODE:
+                break;
+            case DRAWING_LINE:
+                currentX = event.getX();
+                currentY = event.getY();
+                endNode = getNodeAt(currentX,currentY);
+                if(endNode != null){
+                    currentRoot.currentPath.lineTo(event.getX(),event.getY());
+                    Path newPath = new Path();
+                    currentRoot.currentPath = newPath;
+                    startNode.unClick();
+                    //gameState = GameState.TURN_COMPLETE;
+                }
+                else{
+                    currentRoot.clear();
+                    if(startNode!=null) startNode.unClick();
+                    gameState = GameState.SELECTING_START_NODE;
+                }
+                break;
+            case PLACING_NODE:
+                break;
+            case TURN_COMPLETE:
+                break;
         }
     }
 
     public void actionDown(MotionEvent event){
-        if(gameState.drawingLine){
-            currentX = event.getX();
-            currentY = event.getY();
-            startNode = getNodeAt(currentX,currentY);
-            if(startNode!=null){
-                currentRoot.currentPath.moveTo(startNode.x,startNode.y);
-                startNode.click();
-            }
+        switch(gameState){
+            case SELECTING_START_NODE:
+                currentX = event.getX();
+                currentY = event.getY();
+                startNode = getNodeAt(currentX,currentY);
+                if(startNode!=null){
+                    currentRoot.currentPath.moveTo(startNode.x,startNode.y);
+                    startNode.click();
+                    gameState = GameState.DRAWING_LINE;
+                }
+                break;
+            case DRAWING_LINE:
+                break;
+            case PLACING_NODE:
+                break;
+            case TURN_COMPLETE:
+                break;
         }
     }
 
     public void actionMove(MotionEvent event){
-        if(gameState.drawingLine){
-            float x = event.getX();
-            float y = event.getY();
-            float dx = Math.abs(x-currentX);
-            float dy = Math.abs(y-currentY);
-            if(dx > 4 && dy > 4){
-                if(!checkCollision(x,y)){
-                    currentRoot.currentPath.quadTo(currentX,currentY,(x+currentX)/2,(y+currentY)/2);
-                    currentX = x;
-                    currentY = y;
+        switch(gameState){
+            case SELECTING_START_NODE:
+                break;
+            case DRAWING_LINE:
+                float x = event.getX();
+                float y = event.getY();
+                float dx = Math.abs(x-currentX);
+                float dy = Math.abs(y-currentY);
+                if(dx > 4 && dy > 4){
+                    if(!checkCollision(x,y)){
+                        currentRoot.currentPath.quadTo(currentX,currentY,(x+currentX)/2,(y+currentY)/2);
+                        currentX = x;
+                        currentY = y;
+                    }
+                    else{
+                        startNode.unClick();
+                        currentRoot.clear();
+                    }
                 }
-                else{
-                    startNode.unClick();
-                    currentRoot.clear();
-                }
-            }
-            }
+                break;
+            case PLACING_NODE:
+                break;
+            case TURN_COMPLETE:
+                break;
         }
+    }
 
     public Node getNodeAt(float x, float y){
         for(Node node: nodes){
-            if(Math.sqrt(Math.pow(x-node.x,2.0)+Math.pow(y-node.y,2.0))<=node.radius+10){
+            if(Math.sqrt(Math.pow(x-node.x,2.0)+Math.pow(y-node.y,2.0))<=node.radius+15){
                 return node;
             }
         }

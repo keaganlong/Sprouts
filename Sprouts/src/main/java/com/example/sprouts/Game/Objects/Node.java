@@ -5,8 +5,10 @@ import com.example.sprouts.Graphics.Drawing.IDrawStrategy;
 import com.example.sprouts.Graphics.Drawing.DrawNode;
 import com.example.sprouts.Graphics.GameColors;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Vibrator;
 
 /**
  * Created by Keagan on 2/17/14.
@@ -35,6 +37,7 @@ public class Node implements IDrawable{
     public void click(){
         color = GameColors.NODE_SELECTED_COLOR;
         radius = NODE_SELECTED_RADIUS;
+
     }
 
     public void unClick(){
