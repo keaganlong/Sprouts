@@ -5,6 +5,7 @@ import com.example.sprouts.Game.Player;
 import com.example.sprouts.Game.GameState;
 
 import android.graphics.PathMeasure;
+import android.graphics.Region;
 import android.view.MotionEvent;
 import android.graphics.Path;
 import com.example.sprouts.Game.Objects.Root;
@@ -109,14 +110,10 @@ public class GameController {
                 float dx = Math.abs(x-currentX);
                 float dy = Math.abs(y-currentY);
                 if(dx > 4 && dy > 4){
-                    if(!checkCollision(x,y)){
+                    if(!hasCollision(currentRoot.currentPath)){
                         currentRoot.currentPath.quadTo(currentX,currentY,(x+currentX)/2,(y+currentY)/2);
                         currentX = x;
                         currentY = y;
-                    }
-                    else{
-                        startNode.unClick();
-                        currentRoot.clear();
                     }
                 }
                 break;
@@ -136,7 +133,20 @@ public class GameController {
         return null;
     }
 
-    public boolean checkCollision(float x, float y){
+    public boolean hasCollision(Path currentPath){
+        Region clip = new Region (0, 0, 1000, 1000);
+        Region currRegion = new Region();
+        currRegion.setPath(currentPath, clip);
+        for(int i = 0; i < roots.size() - 1; i++){
+            Root r = roots.get(i);
+            Region compRegion = new Region();
+            compRegion.setPath(r.currentPath, clip);if (!currRegion.quickReject(compRegion) && currRegion.op(compRegion, Region.Op.INTERSECT)) {
+                // Collision!
+                startNode.unClick();
+                currentRoot.clear();
+                return true;
+            }
+        }
         return false;
     }
 }
