@@ -22,7 +22,7 @@ public class DrawRoot implements IDrawStrategy{
             paint.reset();
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(5);
-            paint.setColor(Color.BLUE);
+            paint.setColor(root.player.color);
             canvas.drawPath(path,paint);
     }
 }

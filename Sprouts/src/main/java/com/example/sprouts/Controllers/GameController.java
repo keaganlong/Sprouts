@@ -24,6 +24,7 @@ public class GameController {
     private Node startNode;
     private Node endNode;
     private GameState gameState;
+    private int currentPlayerIndex;
 
     private GameController()
     {
@@ -32,11 +33,14 @@ public class GameController {
         nodes = new ArrayList();
         players = new ArrayList();
         players.add(new Player(1));
+        players.add(new Player(2));
         currentPlayer = players.get(0);
-        currentRoot = new Root();
+        currentPlayerIndex = 0;
+        currentRoot = new Root(currentPlayer);
         roots.add(currentRoot);
         //starting node, will get from settings later
         nodes.add(new Node(150,150,currentPlayer));
+        nodes.add(new Node(500,400, currentPlayer));
     }
 
     public static GameController getInstance(){
@@ -59,11 +63,10 @@ public class GameController {
                 currentY = event.getY();
                 endNode = getNodeAt(currentX,currentY);
                 if(endNode != null){
-                    currentRoot.currentPath.lineTo(event.getX(),event.getY());
-                    Path newPath = new Path();
-                    currentRoot.currentPath = newPath;
+                    currentRoot.currentPath.lineTo(endNode.x,endNode.y);
                     startNode.unClick();
-                    //gameState = GameState.TURN_COMPLETE;
+                    endNode.unClick();
+                    gameState = GameState.PLACING_NODE;
                 }
                 else{
                     currentRoot.clear();
@@ -79,10 +82,10 @@ public class GameController {
     }
 
     public void actionDown(MotionEvent event){
+        currentX = event.getX();
+        currentY = event.getY();
         switch(gameState){
             case SELECTING_START_NODE:
-                currentX = event.getX();
-                currentY = event.getY();
                 startNode = getNodeAt(currentX,currentY);
                 if(startNode!=null){
                     currentRoot.currentPath.moveTo(startNode.x,startNode.y);
@@ -93,6 +96,16 @@ public class GameController {
             case DRAWING_LINE:
                 break;
             case PLACING_NODE:
+                if(checkPointOnCurrentRoot(currentX, currentY)){
+                    nodes.add(new Node(currentX,currentY,currentPlayer));
+                    gameState = GameState.TURN_COMPLETE;
+                    gameState = GameState.SELECTING_START_NODE;
+                    currentPlayerIndex++;
+                    currentPlayer = players.get(currentPlayerIndex%players.size());
+                    Root newRoot = new Root(currentPlayer);
+                    roots.add(newRoot);
+                    currentRoot = newRoot;
+                }
                 break;
             case TURN_COMPLETE:
                 break;
@@ -110,6 +123,8 @@ public class GameController {
                 float dy = Math.abs(y-currentY);
                 if(dx > 4 && dy > 4){
                     if(!checkCollision(x,y)){
+                        endNode = getNodeAt(x,y);
+                        if(endNode != null) endNode.click();
                         currentRoot.currentPath.quadTo(currentX,currentY,(x+currentX)/2,(y+currentY)/2);
                         currentX = x;
                         currentY = y;
@@ -129,7 +144,7 @@ public class GameController {
 
     public Node getNodeAt(float x, float y){
         for(Node node: nodes){
-            if(Math.sqrt(Math.pow(x-node.x,2.0)+Math.pow(y-node.y,2.0))<=node.radius+15){
+            if(Math.sqrt(Math.pow(x-node.x,2.0)+Math.pow(y-node.y,2.0))<=node.radius+25){
                 return node;
             }
         }
@@ -139,4 +154,9 @@ public class GameController {
     public boolean checkCollision(float x, float y){
         return false;
     }
+
+    public boolean checkPointOnCurrentRoot(float x, float y){
+        return true;
+    }
+
 }

@@ -22,7 +22,7 @@ public class Node implements IDrawable{
     public int radius;
     public boolean isActive;
     public Player owner;
-    public static final int NODE_SELECTED_RADIUS = 25;
+    public static final int NODE_SELECTED_RADIUS = 40;
     public static final int NODE_RADIUS = 17;
 
     public Node(float x, float y, Player owner){
