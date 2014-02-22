@@ -1,5 +1,7 @@
 package com.example.sprouts.Controllers;
 import com.example.sprouts.Game.Objects.Node;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import com.example.sprouts.Game.Player;
 import com.example.sprouts.Game.GameState;
@@ -35,8 +37,8 @@ public class GameController {
     private GameController()
     {
         gameState = GameState.SELECTING_START_NODE;
-        roots = new ArrayList();
-        nodes = new ArrayList();
+        roots = new ArrayList<Root>();
+        nodes = new ArrayList<Node>();
         players = new ArrayList();
         players.add(new Player(1));
         players.add(new Player(2));
@@ -45,8 +47,14 @@ public class GameController {
         currentRoot = new Root(currentPlayer);
         roots.add(currentRoot);
         //starting node, will get from settings later
-        nodes.add(new Node(250,200, currentPlayer));
-        nodes.add(new Node(250,500, currentPlayer));
+    }
+
+    public ArrayList<Node> getNodesCopy(){
+        return (ArrayList<Node>)nodes.clone();
+    }
+
+    public ArrayList<Root> getRootsCopy(){
+        return (ArrayList<Root>)roots.clone();
     }
 
     public static void destroyInstance(){
@@ -58,10 +66,6 @@ public class GameController {
             instance = new GameController();
         }
         return instance;
-    }
-
-    public void addNode(float x, float y){
-        nodes.add(new Node(x,y,currentPlayer));
     }
 
     public void actionUp(MotionEvent event){
@@ -112,7 +116,7 @@ public class GameController {
                 break;
             case PLACING_NODE:
                 if(getNodeAt(currentX, currentY)==null){
-                    nodes.add(new Node(currentX,currentY,currentPlayer,2));
+                    nodes.add(new Node((int)currentX,(int)currentY,2));
                     gameState = GameState.TURN_COMPLETE;
                     gameState = GameState.SELECTING_START_NODE;
                     currentPlayerIndex++;
@@ -136,7 +140,7 @@ public class GameController {
             case DRAWING_LINE:
                 float dx = Math.abs(x-currentX);
                 float dy = Math.abs(y-currentY);
-                if(dx > 4 && dy > 4){
+                if(dx > 3 && dy > 3){
                     if(!hasCollision(x, y)){
                         currentRoot.lineTo(x,y);
                         currentX = x;
@@ -164,7 +168,7 @@ public class GameController {
     }
 
     public void updateRoots(Bitmap bitmap){
-        System.out.println(Color.red(bitmap.getPixel(250,200))+" "+Color.blue(bitmap.getPixel(200,200))+" "+Color.green(bitmap.getPixel(200,200)));
+        //System.out.println(Color.red(bitmap.getPixel(250,200))+" "+Color.blue(bitmap.getPixel(200,200))+" "+Color.green(bitmap.getPixel(200,200)));
     }
 
     public boolean hasCollision(float x, float y){

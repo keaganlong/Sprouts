@@ -16,8 +16,8 @@ import android.os.Vibrator;
 public class Node implements IDrawable{
     IDrawStrategy drawStrategy = new DrawNode(this);
 
-    public float x;
-    public float y;
+    public int x;
+    public int y;
     public int color;
     public int radius;
     public int inDegree;
@@ -27,24 +27,22 @@ public class Node implements IDrawable{
     public static final int NODE_CAPACITY = 3;
     public boolean selected;
 
-    public Node(float x, float y, Player owner){
+    public Node(int x, int y){
         inDegree = 0;
         selected = false;
         this.x = x;
         this.y = y;
         this.color = GameColors.NODE_COLOR_0;
         this.radius = NODE_RADIUS;
-        this.owner = owner;
     }
 
-    public Node(float x, float y, Player owner, int inDegree){
+    public Node(int x, int y, int inDegree){
         this.inDegree = inDegree;
         selected = false;
         this.x = x;
         this.y = y;
         this.color = GameColors.NODE_COLORS[inDegree];
         this.radius = NODE_RADIUS;
-        this.owner = owner;
     }
 
     public void click(){
@@ -72,5 +70,9 @@ public class Node implements IDrawable{
 
     public boolean isActive(){
         return inDegree<NODE_CAPACITY;
+    }
+
+    public String toString(){
+        return "Node("+x+" "+y+")";
     }
 }
