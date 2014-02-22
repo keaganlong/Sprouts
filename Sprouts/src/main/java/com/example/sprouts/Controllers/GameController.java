@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import com.example.sprouts.Game.Player;
 import com.example.sprouts.Game.GameState;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.PathMeasure;
 import android.graphics.Region;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.graphics.Path;
 import com.example.sprouts.Game.Objects.Root;
@@ -40,8 +45,12 @@ public class GameController {
         currentRoot = new Root(currentPlayer);
         roots.add(currentRoot);
         //starting node, will get from settings later
-        nodes.add(new Node(150,150,currentPlayer));
-        nodes.add(new Node(500,400, currentPlayer));
+        nodes.add(new Node(300,200, currentPlayer));
+        nodes.add(new Node(300,500, currentPlayer));
+    }
+
+    public static void destroyInstance(){
+        instance = null;
     }
 
     public static GameController getInstance(){
@@ -63,15 +72,19 @@ public class GameController {
                 currentX = event.getX();
                 currentY = event.getY();
                 endNode = getNodeAt(currentX,currentY);
-                if(endNode != null){
-                    currentRoot.currentPath.lineTo(endNode.x,endNode.y);
+                if(endNode != null && endNode.isActive()){
+                    currentRoot.lineTo(endNode.x,endNode.y);
                     startNode.unClick();
                     endNode.unClick();
+                    endNode.set();
                     gameState = GameState.PLACING_NODE;
                 }
                 else{
                     currentRoot.clear();
-                    if(startNode!=null) startNode.unClick();
+                    if(startNode!=null){
+                        startNode.unClick();
+                        startNode.unSet();
+                    }
                     gameState = GameState.SELECTING_START_NODE;
                 }
                 break;
@@ -88,8 +101,9 @@ public class GameController {
         switch(gameState){
             case SELECTING_START_NODE:
                 startNode = getNodeAt(currentX,currentY);
-                if(startNode!=null){
-                    currentRoot.currentPath.moveTo(startNode.x,startNode.y);
+                if(startNode!=null && startNode.isActive()){
+                    currentRoot.startAt(startNode.x, startNode.y);
+                    startNode.set();
                     startNode.click();
                     gameState = GameState.DRAWING_LINE;
                 }
@@ -97,8 +111,8 @@ public class GameController {
             case DRAWING_LINE:
                 break;
             case PLACING_NODE:
-                if(checkPointOnCurrentRoot(currentX, currentY)){
-                    nodes.add(new Node(currentX,currentY,currentPlayer));
+                if(getNodeAt(currentX, currentY)==null){
+                    nodes.add(new Node(currentX,currentY,currentPlayer,2));
                     gameState = GameState.TURN_COMPLETE;
                     gameState = GameState.SELECTING_START_NODE;
                     currentPlayerIndex++;
@@ -114,19 +128,22 @@ public class GameController {
     }
 
     public void actionMove(MotionEvent event){
+        float x = event.getX();
+        float y = event.getY();
         switch(gameState){
             case SELECTING_START_NODE:
                 break;
             case DRAWING_LINE:
-                float x = event.getX();
-                float y = event.getY();
                 float dx = Math.abs(x-currentX);
                 float dy = Math.abs(y-currentY);
                 if(dx > 4 && dy > 4){
-                    if(!hasCollision(currentRoot.currentPath)){
-                        currentRoot.currentPath.quadTo(currentX,currentY,(x+currentX)/2,(y+currentY)/2);
+                    if(!hasCollision(x, y)){
+                        currentRoot.lineTo(x,y);
                         currentX = x;
                         currentY = y;
+                    }
+                    else{
+                        gameState = GameState.SELECTING_START_NODE;
                     }
                 }
                 break;
@@ -139,27 +156,18 @@ public class GameController {
 
     public Node getNodeAt(float x, float y){
         for(Node node: nodes){
-            if(Math.sqrt(Math.pow(x-node.x,2.0)+Math.pow(y-node.y,2.0))<=node.radius+25){
+            if(Math.sqrt(Math.pow(x-node.x,2.0)+Math.pow(y-node.y,2.0))<=node.radius+10){
                 return node;
             }
         }
         return null;
     }
 
-    public boolean hasCollision(Path currentPath){
-        Region clip = new Region (0, 0, 1000, 1000);
-        Region currRegion = new Region();
-        currRegion.setPath(currentPath, clip);
-        for(int i = 0; i < roots.size() - 1; i++){
-            Root r = roots.get(i);
-            Region compRegion = new Region();
-            compRegion.setPath(r.currentPath, clip);if (!currRegion.quickReject(compRegion) && currRegion.op(compRegion, Region.Op.INTERSECT)) {
-                // Collision!
-                startNode.unClick();
-                currentRoot.clear();
-                return true;
-            }
-        }
+    public void updateRoots(Bitmap bitmap){
+
+    }
+
+    public boolean hasCollision(float x, float y){
         return false;
     }
 

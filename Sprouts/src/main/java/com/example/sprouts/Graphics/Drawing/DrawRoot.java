@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 
+import com.example.sprouts.Game.Objects.Coordinate;
 import com.example.sprouts.Game.Objects.Root;
 
 /**
@@ -18,11 +19,10 @@ public class DrawRoot implements IDrawStrategy{
     }
 
     public void draw(Canvas canvas, Paint paint){
-            Path path = root.currentPath;
             paint.reset();
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(5);
             paint.setColor(root.player.color);
-            canvas.drawPath(path,paint);
+            canvas.drawPath(root.path,paint);
     }
 }

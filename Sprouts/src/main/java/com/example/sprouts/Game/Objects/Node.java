@@ -20,32 +20,57 @@ public class Node implements IDrawable{
     public float y;
     public int color;
     public int radius;
-    public boolean isActive;
+    public int inDegree;
     public Player owner;
     public static final int NODE_SELECTED_RADIUS = 40;
     public static final int NODE_RADIUS = 17;
+    public static final int NODE_CAPACITY = 3;
+    public boolean selected;
 
     public Node(float x, float y, Player owner){
+        inDegree = 0;
+        selected = false;
         this.x = x;
         this.y = y;
-        this.color = GameColors.NODE_COLOR;
+        this.color = GameColors.NODE_COLOR_0;
         this.radius = NODE_RADIUS;
         this.owner = owner;
-        isActive = true;
+    }
+
+    public Node(float x, float y, Player owner, int inDegree){
+        this.inDegree = inDegree;
+        selected = false;
+        this.x = x;
+        this.y = y;
+        this.color = GameColors.NODE_COLORS[inDegree];
+        this.radius = NODE_RADIUS;
+        this.owner = owner;
     }
 
     public void click(){
-        color = GameColors.NODE_SELECTED_COLOR;
-        radius = NODE_SELECTED_RADIUS;
-
+        selected = true;
     }
 
     public void unClick(){
-        color = GameColors.NODE_COLOR;
-        radius = NODE_RADIUS;
+        selected = false;
     }
 
     public void draw(Canvas canvas, Paint paint){
         drawStrategy.draw(canvas,paint);
+    }
+
+    public void set(){
+        inDegree++;
+        color = GameColors.NODE_COLORS[inDegree];
+    }
+
+    public void unSet(){
+        inDegree--;
+        color = GameColors.NODE_COLORS[inDegree];
+    }
+
+
+    public boolean isActive(){
+        return inDegree<NODE_CAPACITY;
     }
 }

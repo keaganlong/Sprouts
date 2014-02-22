@@ -16,5 +16,10 @@ public class DrawNode implements IDrawStrategy{
         paint.reset();
         paint.setColor(node.color);
         canvas.drawCircle(node.x, node.y, node.radius, paint);
+        if(node.selected){
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(4);
+            canvas.drawCircle(node.x,node.y,node.radius+10,paint);
+        }
     }
 }
