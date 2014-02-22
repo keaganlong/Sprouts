@@ -32,6 +32,8 @@ public class GameLoopThread extends Thread {
                 canvas = gameView.getHolder().lockCanvas();
                 synchronized (gameView.getHolder()) {
                     //gameView.onDraw(canvas);
+                    gameView.gameController.setBitmap(gameView.getDrawingCache());
+
                     gameView.postInvalidate();
                 }
             } finally {

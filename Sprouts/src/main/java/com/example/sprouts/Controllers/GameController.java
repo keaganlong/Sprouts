@@ -32,6 +32,7 @@ public class GameController {
     public float currentX;
     public float currentY;
     public Player currentPlayer;
+    public Bitmap bitMap;
     private ArrayList<Point> closeList = new ArrayList<Point>();
     private ArrayList<Point> transactionScope = new ArrayList<Point>();
     private Node startNode;
@@ -44,6 +45,8 @@ public class GameController {
         gameState = GameState.SELECTING_START_NODE;
         roots = new ArrayList<Root>();
         nodes = new ArrayList<Node>();
+        closeList = new ArrayList<Point>();
+        transactionScope = new ArrayList<Point>();
         players = new ArrayList();
         players.add(new Player(1));
         players.add(new Player(2));
@@ -148,7 +151,7 @@ public class GameController {
                 float dx = Math.abs(x-currentX);
                 float dy = Math.abs(y-currentY);
                 if(dx > 3 && dy > 3){
-                    if(!hasCollision(Bitmap bitMap)){
+                    if(!hasCollision(bitMap)){
                         currentRoot.lineTo(x,y);
                         currentX = x;
                         currentY = y;
@@ -182,24 +185,28 @@ public class GameController {
     public boolean hasCollision(Bitmap bitMap){
         for (int i = 0; i < bitMap.getWidth(); i++){
             for (int j = 0; j < bitMap.getHeight(); j++){
-                if(bitMap.getPixel(i, j) == Color.GREEN){
+                if(bitMap.getPixel(i, j) != Color.WHITE){
                     Point point = new Point(i, j);
-                    if (closeList.contains(point)){
-                        //INTERSECTION!!
-                        return true;
-                    }
-                    else{
-                        //ALL IS GOOD
-                        transactionScope.add(point);
-                    }
+//                    if (closeList.contains(point)){
+//                        //INTERSECTION!!
+//                        return true;
+//                    }
+//                    else{
+//                        //ALL IS GOOD
+//                        transactionScope.add(point);
+//                    }
                 }
             }
         }
-        return true;
+        return false;
     }
 
     public boolean checkPointOnCurrentRoot(float x, float y){
         return true;
+    }
+
+    public void setBitmap(Bitmap bitMap){
+        this.bitMap = bitMap;
     }
 
 }

@@ -25,7 +25,7 @@ import android.widget.ImageView;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback{
     private Paint paint = new Paint();
-    private GameController gameController;
+    public GameController gameController;
     private GameSettings gameSettings;
     private SurfaceHolder surfaceHolder;
     private GameLoopThread gameLoopThread;
@@ -57,7 +57,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
     public GameView(Context context) {
         super(context);
         setLayoutParams(new ViewGroup.LayoutParams(500, 500));
-
+        setDrawingCacheEnabled(true);
         gameController = GameController.getInstance();
         gameSettings = new GameSettings(gameController,3);
         gameSettings.initializeAll();
@@ -65,7 +65,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
         gameLoopThread = new GameLoopThread(this);
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
-        setDrawingCacheEnabled(true);
     }
 
     @Override
