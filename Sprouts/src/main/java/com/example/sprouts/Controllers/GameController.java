@@ -1,6 +1,8 @@
 package com.example.sprouts.Controllers;
 import com.example.sprouts.Game.Objects.Node;
 import java.util.ArrayList;
+import java.util.List;
+
 import com.example.sprouts.Game.Player;
 import com.example.sprouts.Game.GameState;
 
@@ -8,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PathMeasure;
+import android.graphics.Point;
 import android.graphics.Region;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -27,6 +30,8 @@ public class GameController {
     public float currentX;
     public float currentY;
     public Player currentPlayer;
+    private ArrayList<Point> closeList = new ArrayList<Point>();
+    private ArrayList<Point> transactionScope = new ArrayList<Point>();
     private Node startNode;
     private Node endNode;
     private GameState gameState;
@@ -77,6 +82,8 @@ public class GameController {
                     startNode.unClick();
                     endNode.unClick();
                     endNode.set();
+                    for (Point p : transactionScope)
+                        closeList.add(p);
                     gameState = GameState.PLACING_NODE;
                 }
                 else{
@@ -137,12 +144,13 @@ public class GameController {
                 float dx = Math.abs(x-currentX);
                 float dy = Math.abs(y-currentY);
                 if(dx > 4 && dy > 4){
-                    if(!hasCollision(x, y)){
+                    if(!hasCollision(Bitmap bitMap)){
                         currentRoot.lineTo(x,y);
                         currentX = x;
                         currentY = y;
                     }
                     else{
+                        transactionScope.clear();
                         gameState = GameState.SELECTING_START_NODE;
                     }
                 }
@@ -167,8 +175,23 @@ public class GameController {
         System.out.println(Color.red(bitmap.getPixel(250,200))+" "+Color.blue(bitmap.getPixel(200,200))+" "+Color.green(bitmap.getPixel(200,200)));
     }
 
-    public boolean hasCollision(float x, float y){
-        return false;
+    public boolean hasCollision(Bitmap bitMap){
+        for (int i = 0; i < bitMap.getWidth(); i++){
+            for (int j = 0; j < bitMap.getHeight(); j++){
+                if(bitMap.getPixel(i, j) == Color.GREEN){
+                    Point point = new Point(i, j);
+                    if (closeList.contains(point)){
+                        //INTERSECTION!!
+                        return true;
+                    }
+                    else{
+                        //ALL IS GOOD
+                        transactionScope.add(point);
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     public boolean checkPointOnCurrentRoot(float x, float y){
