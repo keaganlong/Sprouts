@@ -147,8 +147,13 @@ public class GameController {
             case DRAWING_LINE:
                 float dx = Math.abs(x-currentX);
                 float dy = Math.abs(y-currentY);
+<<<<<<< HEAD
                 if(dx > 3 && dy > 3){
+                    if(!hasCollision(x, y)){
+=======
+                if(dx > 4 && dy > 4){
                     if(!hasCollision(Bitmap bitMap)){
+>>>>>>> 54239e5bd6cf62756f7ccc5bd640ffb8e580bb64
                         currentRoot.lineTo(x,y);
                         currentX = x;
                         currentY = y;

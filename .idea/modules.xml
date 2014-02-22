@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Sprouts/Sprouts.iml" filepath="$PROJECT_DIR$/Sprouts/Sprouts.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Sprouts.iml" filepath="$PROJECT_DIR$/Sprouts.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Sprouts/Sprouts-Sprouts.iml" filepath="$PROJECT_DIR$/Sprouts/Sprouts-Sprouts.iml" />
       <module fileurl="file://$PROJECT_DIR$/SproutsProject.iml" filepath="$PROJECT_DIR$/SproutsProject.iml" />
     </modules>
   </component>
