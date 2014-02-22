@@ -45,8 +45,8 @@ public class GameController {
         currentRoot = new Root(currentPlayer);
         roots.add(currentRoot);
         //starting node, will get from settings later
-        nodes.add(new Node(300,200, currentPlayer));
-        nodes.add(new Node(300,500, currentPlayer));
+        nodes.add(new Node(250,200, currentPlayer));
+        nodes.add(new Node(250,500, currentPlayer));
     }
 
     public static void destroyInstance(){
@@ -164,7 +164,7 @@ public class GameController {
     }
 
     public void updateRoots(Bitmap bitmap){
-
+        System.out.println(Color.red(bitmap.getPixel(250,200))+" "+Color.blue(bitmap.getPixel(200,200))+" "+Color.green(bitmap.getPixel(200,200)));
     }
 
     public boolean hasCollision(float x, float y){

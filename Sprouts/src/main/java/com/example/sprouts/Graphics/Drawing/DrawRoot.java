@@ -19,10 +19,10 @@ public class DrawRoot implements IDrawStrategy{
     }
 
     public void draw(Canvas canvas, Paint paint){
-            paint.reset();
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(5);
-            paint.setColor(root.player.color);
-            canvas.drawPath(root.path,paint);
+        paint.reset();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5);
+        paint.setColor(root.player.color);
+        canvas.drawPath(root.path,paint);
     }
 }

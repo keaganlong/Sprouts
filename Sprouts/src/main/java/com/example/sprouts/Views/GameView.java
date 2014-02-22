@@ -18,12 +18,12 @@ public class GameView extends ImageView {
     Paint paint = new Paint();
     GameController gameController = GameController.getInstance();
     Bitmap bitmap;
+
     public GameView(Context context) {
         super(context);
         bitmap = Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_8888);
         setImageBitmap(bitmap);
     }
-
 
     @Override
     public void onDraw(Canvas canvas) {
